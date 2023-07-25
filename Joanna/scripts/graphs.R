@@ -1,6 +1,24 @@
 library(ggplot2)
 
 
+#### Visualize the Data ####
+## Alcohol Consumption Based on Gender ##
+avg_alcConsum <- summarize(cleanData,
+                           mean_alc = mean(AvgDrinksDaily),
+                           .by = gender)
+View(avg_alcConsum)
+
+
+
+
+ggplot(data = avg_alcConsum, aes(x= gender, y= mean_alc, fill = gender))+
+  geom_bar(stat = "identity", position = "stack") +
+  scale_fill_manual(values=c('red', "blue"))
+labs(x = "Gender",
+     y = "Mean Alcohol Consumption",
+     title = "Average Alcohol Consumption Based on Gender") 
+
+
 #### Convert to Numeric ####
 
     
