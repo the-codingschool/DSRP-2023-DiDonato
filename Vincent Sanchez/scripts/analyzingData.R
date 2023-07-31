@@ -5,8 +5,6 @@ library(reshape2)
 library(ggplot2)
 library(corrplot)
 
-View(livercond_hbp)
-
 # calculate correlations
 liverCors <- livercond_hbp |>
   cor() |>
@@ -21,9 +19,6 @@ liverCors2 <- test2 |>
 liverCors2
 
 # plot correlations
-ggplot(liverCors, aes(x = Var1, y = Var2, fill = value)) +
-  geom_tile() +
-  scale_fill_gradient2(low = "orange", high = "blue", mid = "white", midpoint = 0) #correlation between race and told_liver ?
 
 ggplot(liverCors2, aes(x = Var1, y = Var2, fill = value)) +
   geom_tile() +
@@ -31,7 +26,6 @@ ggplot(liverCors2, aes(x = Var1, y = Var2, fill = value)) +
 
 test2 <- filter(test2, agetold_liver < 78, agetold_hbp < 78)
 test3 <- filter(test2, agetold_liver > 21, agetold_hbp > 21)
-View(test3)
 
 cor_told3 <- cor(test3)
 corrplot(cor_told3, tl.srt = 30,
@@ -40,7 +34,7 @@ corrplot(cor_told3, tl.srt = 30,
 # scatterplot (agetold_liver vs. agetold_hbp)
 
 ggplot(test3, aes(x = agetold_liver, y = agetold_hbp)) +
-  geom_abline(lty = "dashed", color = "red", size = 1, slope = 0.5, intercept = 25) +
+  geom_abline(lty = "dashed", color = "red", linewidth = 1, slope = 0.5, intercept = 25) +
   xlim(21,78) +
   ylim(21,78) +
   geom_smooth(linewidth = 2) +

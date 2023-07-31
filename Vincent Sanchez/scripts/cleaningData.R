@@ -60,8 +60,8 @@ general_info <- inner_join(demo_clean, bm_clean)
 
 # blood pressure & cholesterol cleaning (only want blood pressure)
 head(bp_chol)
-hbp <- select(bp_chol, SEQN, BPQ030, BPD035, BPQ040A)
-hbp <- rename(hbp, told_hbp = BPQ030, agetold_hbp = BPD035, prescr_hbp = BPQ040A)
+hbp <- select(bp_chol, SEQN, BPQ030, BPD035, BPQ050A)
+hbp <- rename(hbp, told_hbp = BPQ030, agetold_hbp = BPD035, prescr_hbp = BPQ050A)
 
 # medical conditions cleaning (only want liver conditions)
 head(med_conditions)
@@ -77,7 +77,6 @@ everything <- inner_join(inner_join(general_info, hbp), liver_info)
 livercond_hbp <- filter(everything, !is.na(told_liver))
 livercond_hbp <- filter(livercond_hbp, !is.na(told_hbp), !is.na(prescr_hbp), !is.na(height_cm), !is.na(weight_kg))
 livercond_hbp <- filter(livercond_hbp, told_hbp < 8, told_liver < 8)
-View(livercond_hbp)
 
 test <- filter(livercond_hbp, told_liver == 1)
 test <- select(test, -told_liver)
@@ -87,4 +86,3 @@ test2 <- mutate(test, liver_cirrhosis = ifelse(is.na(liver_cirrhosis), 0, liver_
 test2 <- mutate(test2, fatty_liver = ifelse(is.na(fatty_liver), 0, fatty_liver))
 test2 <- mutate(test2, viral_hepa = ifelse(is.na(viral_hepa), 0, viral_hepa))
 test2 <- filter(test2, agetold_liver < 81, agetold_hbp < 81)
-View(test2)
