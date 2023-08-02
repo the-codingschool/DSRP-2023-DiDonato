@@ -21,7 +21,7 @@ class_test_bio <- testing(class_split)
 boost_class_fit_bio <- boost_tree() |>
   set_engine("xgboost") |>
   set_mode("classification") |>
-  fit(depressed ~ ., data = class_train)
+  fit(depressed ~ ., data = class_train_bio)
 
 boost_class_fit_bio$fit$evaluation_log
 
@@ -29,7 +29,7 @@ boost_class_fit_bio$fit$evaluation_log
 forest_class_fit_bio <- rand_forest() |>
   set_engine("ranger") |>
   set_mode("classification") |>
-  fit(depressed ~ ., data = class_train)
+  fit(depressed ~ ., data = class_train_bio)
 
 forest_class_fit_bio$fit
 
@@ -101,4 +101,10 @@ ggplot(forest_data_frame_bio, aes(fill=Prediction, y=Freq, x=Reference)) +
   theme_bw() +
   labs(y = "Percentage") +
   scale_fill_manual(values=wes_palette(n=4, name="Moonrise1"))
+
+## tells you the important factors
+vip(boost_class_fit_social) +
+  theme_bw() +
+  labs(title = "Important factors in the social model")
+
 

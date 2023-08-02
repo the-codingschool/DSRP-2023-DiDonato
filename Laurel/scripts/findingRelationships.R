@@ -61,7 +61,9 @@ factorsCor <- complete_health_overview |>
 ## plotting the correlation between all variables
 ggplot(factorsCor, aes(x = Var1, y = Var2, fill = value)) +
   geom_tile() +
-  scale_fill_gradient2(high = "darkblue", low = "red", mid = "white", midpoint = 0)
+  scale_fill_gradient2(high = "darkblue", low = "red", mid = "white", midpoint = 0) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  labs(x = "Variable 1", y = "Variable 2")
 
 
 #### testing smoking and alcohol ####
@@ -92,7 +94,8 @@ moreFactorsCor <- completeLook |>
 ## plotting the correlation between all variables
 ggplot(moreFactorsCor, aes(x = Var1, y = Var2, fill = value)) +
   geom_tile() +
-  scale_fill_gradient2(high = "darkblue", low = "red", mid = "white", midpoint = 0)
+  scale_fill_gradient2(high = "darkblue", low = "red", mid = "white", midpoint = 0) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 ggplot(data = completeLook, aes(x = DPQ090, y = alcohol_use_in_12_months)) +
   geom_jitter(width = 0.25, alpha = 0.2, color = "blue") +

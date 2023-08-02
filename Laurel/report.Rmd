@@ -1,0 +1,79 @@
+# Title of Report
+
+## Laurel Sun
+
+## Abstract
+
+-   Your abstract is a condensed version or summary of your research study
+
+-   It's made up of 4 parts, each 1-2 sentences: Problem, Approach, Results, Conclusion
+
+-   Problem: This sets up the background of your research project. What was your research question? Provide some context why this is important/why your research question is interesting. What were you hoping to find out (goal), or what was your hypothesis?
+
+-   Approach: This is a brief summary of your methods. What columns of the dataset did you use? Did you group the data any particular way? What types of statistical analyses did you do? On which groups? How much data is there? What is/are the population(s)/variable(s)?
+
+-   Results: Describe your main finding with data. Concisely describe how your results pertain to your study aim or hypothesis. Remember to report non-significant differences too!
+
+-   Conclusion: Explain your main findings and why they are important. Describe the primary take-home message(s). Conclusions should be reasonable and supported by your findings.
+
+-   I recommend writing your abstract last. It's easier to write a summary after you've written everything else. Don't worry if it feels repetitive, it's meant to be just a 1 paragraph version of your full report.
+
+## Background
+
+My research question is determining whether social factors, like their education, family income to poverty ratio, race, self image, monthly poverty index, and the number of hours they work, or biological factors, like their gender, body mass index, how many sedentary minutes they have a day, whether they have high blood pressure or cholesterol, whether they have anemia, whether they are overweight, and how many hours of sleep they receive each night, are a better predictor of their overall mental health. My hypothesis is that there is a difference between the two factors, and one set of factors will be better at predicting one's mental health than the other set.
+
+This is important to see because it allows us to narrow down on a set of factors and focus our resources and attention that would make the most impact on people. It would allow the process to be more time efficient as well as more cost efficient for the overall population, and serve as a starting point. The data is from the National Health and Nutrition Examination Survey from 2013-2020, conducted by the Centers of Disease Control and Prevention on people living in the United States.
+
+## Results
+
+\*\*Click knit when you're done
+
+\*\*Can click the gear button to customize what you want to show
+
+-   The results section is going to include all of the interesting plots you have created
+
+-   Give each plot a figure number and title
+
+-   Add a few (2-5) sentences describing each plot, any annotations you made, and major conclusions
+
+-   I recommend using \`echo = F\` in your R chunk to hide the code but show the plot that it creates
+
+-   This will be the majority of your report
+
+```{r}
+
+```
+
+## Discussion
+
+-   Your discussion is a place to talk about what all this means in context of the greater field. It is also a place to mention any limitations or shortcomings of the data, your methods, or your results.
+
+The overall accuracy of the models trained on social factors is higher than the models trained on biological factors. This is important to note, because it suggests that the root of mental health problems comes from the structure of the society of the United States. However, it is important to mention that this is merely a suggestion, and does not determine a causal relationship between social factors and mental health issues. The method I used, of training different models to determine the accuracy, is also flawed in that these models do not conclude a definite relationship between the two factors. The data is also flawed because it
+
+-   What conclusions can you draw from the data?
+
+-   What is the importance of these conclusions?
+
+-   What do they mean in the bigger picture? (Apply to greater topic/field)
+
+-   Is there anything different than you expected?
+
+-   Does it support your original hypothesis?
+
+-   What would be some reasonable next steps, or questions you still have?
+
+## Code and Data Availability
+
+You can see the code here: <https://github.com/the-codingschool/DSRP-2023-DiDonato/tree/main/Laurel>
+
+All the data comes from the CDC website:
+
+-   2017-2020: <https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?Cycle=2017-2020>
+
+-   2015-2016: <https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=2015>
+
+-   2013-2014: <https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=2013>
+
+## Acknowledgements
+
+I would like to acknowledge Yijia Wang and AJ DiDonato for providing feedback on my project, as well as Sarah Mae Parker for teaching me all I know about R right now.
