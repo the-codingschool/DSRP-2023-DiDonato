@@ -31,4 +31,3 @@ chisq_result <- chisq.test(t3)
 chisq_result$p.value    ## p-value: 2.255597e-19
 chisq_result$residuals
 
-

@@ -102,3 +102,42 @@ ggplot(data = completeLook, aes(x = DPQ090, y = alcohol_use_in_12_months)) +
   labs(y = "Alcohol use", x = "Depressed", caption = 
          "0 = not at all, 1 = several days, 2 = more than half the days, 3 = nearly every day") +
   theme_bw()
+
+
+## taking an even sample from all categories
+even_data <- rbind(sample_n(filter(complete_health_overview, depressed == 0), size = 400),
+                   sample_n(filter(complete_health_overview, depressed == 1), size = 400),
+                   sample_n(filter(complete_health_overview, depressed == 2), size = 400),
+                   sample_n(filter(complete_health_overview, depressed == 3), size = 400))
+
+table(even_data$depressed)
+
+ggplot(data = even_data, aes(x = depressed, y = monthly_poverty_index)) +
+  geom_jitter(width = 0.25, alpha = 0.2, color = "blue") +
+  labs(y = "Monthly poverty index", x = "Depressed", caption = 
+         "0 = not at all, 1 = several days, 2 = more than half the days, 3 = nearly every day") +
+  theme_bw()
+
+ggplot(data = even_data, aes(x = depressed, y = bmi)) +
+  geom_jitter(width = 0.25, alpha = 0.2, color = "blue") +
+  labs(y = "Body mass index", x = "Depressed", caption = 
+         "0 = not at all, 1 = several days, 2 = more than half the days, 3 = nearly every day") +
+  theme_bw()
+
+ggplot(data = even_data, aes(x = depressed, y = income_to_poverty)) +
+  geom_jitter(width = 0.25, alpha = 0.2, color = "blue") +
+  labs(y = "Ratio of income to poverty", x = "Depressed", caption = 
+         "0 = not at all, 1 = several days, 2 = more than half the days, 3 = nearly every day") +
+  theme_bw()
+
+ggplot(data = even_data, aes(x = depressed, y = age)) +
+  geom_jitter(width = 0.25, alpha = 0.1, color = "blue") +
+  labs(y = "Age", x = "Depressed", caption = 
+         "0 = not at all, 1 = several days, 2 = more than half the days, 3 = nearly every day") +
+  theme_bw()
+
+ggplot(data = even_data, aes(x = depressed, y = sleep_hours)) +
+  geom_jitter(width = 0.25, alpha = 0.2, color = "blue") +
+  labs(y = "Hours slept", x = "Depressed", caption = 
+         "0 = not at all, 1 = several days, 2 = more than half the days, 3 = nearly every day") +
+  theme_bw()

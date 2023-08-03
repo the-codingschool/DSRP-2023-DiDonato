@@ -46,21 +46,11 @@ This is important to see because it allows us to narrow down on a set of factors
 
 ## Discussion
 
--   Your discussion is a place to talk about what all this means in context of the greater field. It is also a place to mention any limitations or shortcomings of the data, your methods, or your results.
+The overall accuracy of the models trained on social factors is higher than the models trained on biological factors. This is important to note, because it suggests that the root of mental health problems comes from the structure of society in the United States. It supports my original hypothesis, that models trained on different sets of factors will produce different accuracy percentages. However, a caveat is that though models trained on social factors were more accurate, the accuracy in which they predicted whether someone had a mental health issue was similar to the other models. They were only slightly better at predicting whether if someone didn't have any mental health issues.
 
-The overall accuracy of the models trained on social factors is higher than the models trained on biological factors. This is important to note, because it suggests that the root of mental health problems comes from the structure of the society of the United States. However, it is important to mention that this is merely a suggestion, and does not determine a causal relationship between social factors and mental health issues. The method I used, of training different models to determine the accuracy, is also flawed in that these models do not conclude a definite relationship between the two factors. The data is also flawed because it
+However, it is important to mention that this is merely a suggestion, and does not determine a causal relationship between social factors and mental health issues. The method I used, of training different models to determine the accuracy, is also flawed in that these models do not conclude a definite relationship between the two factors. The data is also flawed because it only accounts for people interviewed between 2013-2020 and older than 21. Also, the way that I defined a mental health issue was how they answered the question, "[Over the last 2 weeks, how often have you been bothered by the following problems:] feeling down, depressed, or hopeless?" Of course, two weeks is in no way a long enough period of time to determine the extent of one's mental health, and has the potential to be impacted by extraneous factors. Another notable factor missing from biological factors is their family history of depression, which would've added a new insight into an individual.
 
--   What conclusions can you draw from the data?
-
--   What is the importance of these conclusions?
-
--   What do they mean in the bigger picture? (Apply to greater topic/field)
-
--   Is there anything different than you expected?
-
--   Does it support your original hypothesis?
-
--   What would be some reasonable next steps, or questions you still have?
+The next logical step of this research is to investigate the best combination of both biological factors and social factors that would lend to the highest accuracy score of its trained models.
 
 ## Code and Data Availability
 
