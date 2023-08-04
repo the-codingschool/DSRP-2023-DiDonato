@@ -1,22 +1,10 @@
-# Title of Report
+# Biopsychology versus Social Psychology: Better Predictor of Mental Health?
 
-## Laurel Sun
+#### Laurel Sun
 
 ## Abstract
 
--   Your abstract is a condensed version or summary of your research study
-
--   It's made up of 4 parts, each 1-2 sentences: Problem, Approach, Results, Conclusion
-
--   Problem: This sets up the background of your research project. What was your research question? Provide some context why this is important/why your research question is interesting. What were you hoping to find out (goal), or what was your hypothesis?
-
--   Approach: This is a brief summary of your methods. What columns of the dataset did you use? Did you group the data any particular way? What types of statistical analyses did you do? On which groups? How much data is there? What is/are the population(s)/variable(s)?
-
--   Results: Describe your main finding with data. Concisely describe how your results pertain to your study aim or hypothesis. Remember to report non-significant differences too!
-
--   Conclusion: Explain your main findings and why they are important. Describe the primary take-home message(s). Conclusions should be reasonable and supported by your findings.
-
--   I recommend writing your abstract last. It's easier to write a summary after you've written everything else. Don't worry if it feels repetitive, it's meant to be just a 1 paragraph version of your full report.
+My research question is whether social factors or biological factors are a better predictor of mental health. This is inspired by the different perspectives of psychology, and specifically about debating the perspective between biopsychology and social psychology. I grouped the data into biological factors (gender, body mass index, how many sedentary minutes they have a day, whether they have high blood pressure or cholesterol, whether they have anemia, whether they are overweight, and how many hours of sleep they receive each night) and social factors (education, family income to poverty ratio, race, self image, monthly poverty index, and the number of hours they work). The population of the survey is adults over the age of 20 living in the U.S., and I used the data collected between the years 2013-2020. The result was that the models trained on social factors had a significantly higher accuracy than the models trained on biological factors. This suggests that the problem with mental health is not based on the environment around us individually, but the social environment imposed on us by the people around us. Rather than look at each individual separately, we should take into account the entire population as a whole.
 
 ## Background
 
@@ -26,23 +14,522 @@ This is important to see because it allows us to narrow down on a set of factors
 
 ## Results
 
-\*\*Click knit when you're done
-
-\*\*Can click the gear button to customize what you want to show
-
--   The results section is going to include all of the interesting plots you have created
-
--   Give each plot a figure number and title
-
--   Add a few (2-5) sentences describing each plot, any annotations you made, and major conclusions
-
--   I recommend using \`echo = F\` in your R chunk to hide the code but show the plot that it creates
-
--   This will be the majority of your report
-
-```{r}
-
+```{r setup, echo=FALSE, message=FALSE}
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(janitor)
+library(ggplot2)
+library(reshape2)
+library(rsample)
+library(parsnip)
+library(yardstick)
+library(Metrics)
+library(haven)
+library(caret)
+library(wesanderson)
+library(vip)
 ```
+
+```{r, echo=FALSE}
+## 2017-2020
+demographic <- read_xpt("data_process/2017-2020/demographic_2017-2020.xpt")
+income <- read_xpt("data_process/2017-2020/income_2017-2020.xpt")
+physical_activity <- read_xpt("data_process/2017-2020/physical_activity_2017-2020.xpt")
+blood_pressure <- read_xpt("data_process/2017-2020/blood_pressure_2017-2020.xpt")
+weight <- read_xpt("data_process/2017-2020/weight_2017-2020.xpt")
+sleep_disorders <- read_xpt("data_process/2017-2020/sleep_disorders_2017-2020.xpt")
+alcohol_use <- read_xpt("data_process/2017-2020/alcohol_2017-2020.xpt")
+mental_health_screener <- read_xpt("data_process/2017-2020/depression_2017-2020.xpt")
+medical_history <- read_xpt("data_process/2017-2020/medical_2017-2020.xpt")
+occupation <- read_xpt("data_process/2017-2020/occupation_2017-2020.xpt")
+
+## 2015-2016
+demographic2 <- read_xpt("data_process/2015-2016/DEMO_I.XPT")
+income2 <- read_xpt("data_process/2015-2016/INQ_I.XPT")
+physical_activity2 <- read_xpt("data_process/2015-2016/PAQ_I.XPT")
+blood_pressure2 <- read_xpt("data_process/2015-2016/BPQ_I.XPT")
+weight2 <- read_xpt("data_process/2015-2016/WHQ_I.XPT")
+sleep_disorders2 <- read_xpt("data_process/2015-2016/SLQ_I.XPT")
+alcohol_use2 <- read_xpt("data_process/2015-2016/ALQ_I.XPT")
+mental_health_screener2 <- read_xpt("data_process/2015-2016/DPQ_I.XPT")
+medical_history2 <- read_xpt("data_process/2015-2016/MCQ_I.XPT")
+occupation2 <- read_xpt("data_process/2015-2016/OCQ_I.XPT")
+
+## 2013-2014
+demographic3 <- read_xpt("data_process/2013-2014/DEMO_H.XPT")
+income3 <- read_xpt("data_process/2013-2014/INQ_H.XPT")
+physical_activity3 <- read_xpt("data_process/2013-2014/PAQ_H.XPT")
+blood_pressure3 <- read_xpt("data_process/2013-2014/BPQ_H.XPT")
+weight3 <- read_xpt("data_process/2013-2014/WHQ_H.XPT")
+sleep_disorders3 <- read_xpt("data_process/2013-2014/SLQ_H.XPT")
+alcohol_use3 <- read_xpt("data_process/2013-2014/ALQ_H.XPT")
+mental_health_screener3 <- read_xpt("data_process/2013-2014/DPQ_H.XPT")
+medical_history3 <- read_xpt("data_process/2013-2014/MCQ_H.XPT")
+occupation3 <- read_xpt("data_process/2013-2014/OCQ_H.XPT")
+```
+
+```{r, echo=FALSE}
+demographic <- demographic |>
+  select(SEQN, RIDAGEYR, RIAGENDR,
+         DMDEDUC2, INDFMPIR, RIDRETH3) |>
+  filter(RIDAGEYR > 21, !is.na(INDFMPIR), DMDEDUC2 <= 5) |>
+  rename("id" = "SEQN",
+         "age" = "RIDAGEYR",
+         "gender" = "RIAGENDR",
+         "education" = "DMDEDUC2",
+         "income_to_poverty" = "INDFMPIR",
+         "race" = "RIDRETH3")
+
+income <- income |>
+  select(-INDFMMPC) |>
+  rename("id" = "SEQN",
+         "monthly_poverty_index" = "INDFMMPI") |>
+  filter(!is.na(monthly_poverty_index))
+
+physical_activity <- physical_activity |> 
+  select(SEQN, PAD680) |>
+  rename("sedentary_minutes" = "PAD680",
+         "id" = SEQN) |>
+  filter(!is.na(sedentary_minutes), sedentary_minutes != 7777, sedentary_minutes != 9999)
+
+blood_pressure <- blood_pressure |>
+  select(SEQN, BPQ020, BPQ080) |>
+  rename("high_blood_pressure" = "BPQ020",
+         "high_cholesterol" = "BPQ080",
+         "id" = SEQN) |>
+  filter(high_blood_pressure != 0, high_cholesterol != 7, high_cholesterol != 9)
+
+weight <- weight |>
+  select(SEQN, WHD010, WHD020, WHQ030) |>
+  rename("height" = "WHD010",
+         "weight" = "WHD020",
+         "self_image" = "WHQ030",
+         "id" = SEQN) |>
+  filter(!is.na(height), !is.na(weight), height != 7777, height != 9999, 
+         weight != 7777, weight != 9999, self_image != 7, self_image != 9)
+  
+weight$bmi <- trunc(weight$weight * 703 / weight$height ^ 2)
+
+sleep_disorders <- sleep_disorders |>
+  select(SEQN, SLD012) |>
+  rename("id" = "SEQN",
+         "sleep_hours" = "SLD012") |>
+  filter(!is.na(sleep_hours), sleep_hours != 77777, sleep_hours != 99999)
+
+depression <- mental_health_screener |>
+  select(SEQN, DPQ020, DPQ060) |>
+  rename("depressed" = "DPQ020",
+         "self_image" = "DPQ060",
+         "id" = SEQN) |>
+  filter(depressed >= 0 & depressed <= 3, !is.na(depressed))
+
+medical_history <- medical_history |>
+  select(SEQN, MCQ053, MCQ080) |>
+  rename("overweight" = "MCQ080",
+         "anemia" = "MCQ053",
+         "id" = SEQN) |>
+  filter(overweight != 9, !is.na(overweight), anemia != 7, anemia != 9)
+
+occupation <- occupation |>
+  select(SEQN, OCD150) |>
+  rename("type_of_work" = "OCD150",
+         "id" = SEQN) |>
+  filter(type_of_work != 7, type_of_work != 9)
+
+health_overview <- demographic |>
+  inner_join(blood_pressure, by = "id") |>
+  inner_join(depression, by = "id") |>
+  inner_join(income, by = "id") |>
+  inner_join(medical_history, by = "id") |>
+  inner_join(occupation, by = "id") |>
+  inner_join(physical_activity, by = "id") |>
+  inner_join(sleep_disorders, by = "id") |>
+  inner_join(weight, by = "id") |>
+  filter(weight != 9999, weight != 7777, height != 9999, 
+         height != 7777, !is.na(sleep_hours), !is.na(self_image.x),
+         !is.na(sedentary_minutes))
+```
+
+```{r, echo=FALSE}
+demographic2 <- demographic2 |>
+  select(SEQN, RIDAGEYR, RIAGENDR,
+         DMDEDUC2, INDFMPIR, RIDRETH3) |>
+  filter(RIDAGEYR > 21, !is.na(INDFMPIR), DMDEDUC2 <= 5) |>
+  rename("id" = "SEQN",
+         "age" = "RIDAGEYR",
+         "gender" = "RIAGENDR",
+         "education" = "DMDEDUC2",
+         "income_to_poverty" = "INDFMPIR",
+         "race" = "RIDRETH3")
+
+income2 <- income2 |>
+  select(SEQN, INDFMMPI) |>
+  rename("id" = "SEQN",
+         "monthly_poverty_index" = "INDFMMPI") |>
+  filter(!is.na(monthly_poverty_index))
+
+physical_activity2 <- physical_activity2 |> 
+  select(SEQN, PAD680) |>
+  rename("sedentary_minutes" = "PAD680",
+         "id" = SEQN) |>
+  filter(!is.na(sedentary_minutes), sedentary_minutes != 7777, sedentary_minutes != 9999)
+
+blood_pressure2 <- blood_pressure2 |>
+  select(SEQN, BPQ020, BPQ080) |>
+  rename("high_blood_pressure" = "BPQ020",
+         "high_cholesterol" = "BPQ080",
+         "id" = SEQN) |>
+  filter(high_blood_pressure != 0, high_cholesterol != 7, high_cholesterol != 9)
+
+weight2 <- weight2 |>
+  select(SEQN, WHD010, WHD020, WHQ030) |>
+  rename("height" = "WHD010",
+         "weight" = "WHD020",
+         "self_image" = "WHQ030",
+         "id" = SEQN) |>
+  filter(!is.na(height), !is.na(weight), height != 7777, height != 9999, 
+         weight != 7777, weight != 9999, self_image != 7, self_image != 9)
+
+weight2$bmi <- trunc(weight2$weight * 703 / weight2$height ^ 2)
+
+sleep_disorders2 <- sleep_disorders2 |>
+  select(SEQN, SLD012) |>
+  rename("id" = "SEQN",
+         "sleep_hours" = "SLD012") |>
+  filter(!is.na(sleep_hours), sleep_hours != 77777, sleep_hours != 99999)
+
+depression2 <- mental_health_screener2 |>
+  select(SEQN, DPQ020, DPQ060) |>
+  rename("depressed" = "DPQ020",
+         "self_image" = "DPQ060",
+         "id" = SEQN) |>
+  filter(depressed >= 0 & depressed <= 3, !is.na(depressed))
+
+medical_history2 <- medical_history2 |>
+  select(SEQN, MCQ053, MCQ080) |>
+  rename("overweight" = "MCQ080",
+         "anemia" = "MCQ053",
+         "id" = SEQN) |>
+  filter(overweight != 9, !is.na(overweight), anemia != 7, anemia != 9)
+
+occupation2 <- occupation2 |>
+  select(SEQN, OCD150) |>
+  rename("type_of_work" = "OCD150",
+         "id" = SEQN) |>
+  filter(type_of_work != 7, type_of_work != 9)
+
+health_overview2 <- demographic2 |>
+  inner_join(blood_pressure2, by = "id") |>
+  inner_join(depression2, by = "id") |>
+  inner_join(income2, by = "id") |>
+  inner_join(medical_history2, by = "id") |>
+  inner_join(occupation2, by = "id") |>
+  inner_join(physical_activity2, by = "id") |>
+  inner_join(sleep_disorders2, by = "id") |>
+  inner_join(weight2, by = "id") |>
+  filter(weight != 9999, weight != 7777, height != 9999, 
+         height != 7777, !is.na(sleep_hours), !is.na(self_image.x),
+         !is.na(sedentary_minutes))
+```
+
+```{r, echo=FALSE}
+demographic3 <- demographic3 |>
+  select(SEQN, RIDAGEYR, RIAGENDR,
+         DMDEDUC2, INDFMPIR, RIDRETH3) |>
+  filter(RIDAGEYR > 21, !is.na(INDFMPIR), DMDEDUC2 <= 5) |>
+  rename("id" = "SEQN",
+         "age" = "RIDAGEYR",
+         "gender" = "RIAGENDR",
+         "education" = "DMDEDUC2",
+         "income_to_poverty" = "INDFMPIR",
+         "race" = "RIDRETH3")
+
+income3 <- income3 |>
+  select(SEQN, INDFMMPI) |>
+  rename("id" = "SEQN",
+         "monthly_poverty_index" = "INDFMMPI") |>
+  filter(!is.na(monthly_poverty_index))
+
+physical_activity3 <- physical_activity3 |> 
+  select(SEQN, PAD680) |>
+  rename("sedentary_minutes" = "PAD680",
+         "id" = SEQN) |>
+  filter(!is.na(sedentary_minutes), sedentary_minutes != 7777, sedentary_minutes != 9999)
+
+blood_pressure3 <- blood_pressure3 |>
+  select(SEQN, BPQ020, BPQ080) |>
+  rename("high_blood_pressure" = "BPQ020",
+         "high_cholesterol" = "BPQ080",
+         "id" = SEQN) |>
+  filter(high_blood_pressure != 0, high_cholesterol != 7, high_cholesterol != 9)
+
+weight3 <- weight3 |>
+  select(SEQN, WHD010, WHD020, WHQ030) |>
+  rename("height" = "WHD010",
+         "weight" = "WHD020",
+         "self_image" = "WHQ030",
+         "id" = SEQN) |>
+  filter(!is.na(height), !is.na(weight), height != 7777, height != 9999, 
+         weight != 7777, weight != 9999, self_image != 7, self_image != 9)
+
+weight3$bmi <- trunc(weight3$weight * 703 / weight3$height ^ 2)
+
+sleep_disorders3 <- sleep_disorders3 |>
+  select(SEQN, SLD010H) |>
+  rename("id" = "SEQN",
+         "sleep_hours" = "SLD010H") |>
+  filter(!is.na(sleep_hours), sleep_hours != 77777, sleep_hours != 99999)
+
+depression3 <- mental_health_screener3 |>
+  select(SEQN, DPQ020, DPQ060) |>
+  rename("depressed" = "DPQ020",
+         "self_image" = "DPQ060",
+         "id" = SEQN) |>
+  filter(depressed >= 0 & depressed <= 3, !is.na(depressed))
+
+medical_history3 <- medical_history3 |>
+  select(SEQN, MCQ053, MCQ080) |>
+  rename("overweight" = "MCQ080",
+         "anemia" = "MCQ053",
+         "id" = SEQN) |>
+  filter(overweight != 9, !is.na(overweight), anemia != 7, anemia != 9)
+
+occupation3 <- occupation3 |>
+  select(SEQN, OCD150) |>
+  rename("type_of_work" = "OCD150",
+         "id" = SEQN) |>
+  filter(type_of_work != 7, type_of_work != 9)
+
+health_overview3 <- demographic3 |>
+  inner_join(blood_pressure3, by = "id") |>
+  inner_join(depression3, by = "id") |>
+  inner_join(income3, by = "id") |>
+  inner_join(medical_history3, by = "id") |>
+  inner_join(occupation3, by = "id") |>
+  inner_join(physical_activity3, by = "id") |>
+  inner_join(sleep_disorders3, by = "id") |>
+  inner_join(weight3, by = "id") |>
+  filter(weight != 9999, weight != 7777, height != 9999, 
+         height != 7777, !is.na(sleep_hours), !is.na(self_image.x),
+         !is.na(sedentary_minutes))
+
+complete_health_overview <- rbind(health_overview, health_overview2, health_overview3)
+
+even_data <- rbind(sample_n(filter(complete_health_overview, depressed == 0), size = 400),
+                   sample_n(filter(complete_health_overview, depressed == 1), size = 400),
+                   sample_n(filter(complete_health_overview, depressed == 2), size = 400),
+                   sample_n(filter(complete_health_overview, depressed == 3), size = 400))
+```
+
+Shown below are the plots that have been used in this experiment. The first two plots were purely used for exploration of the data, while figures 3-7 are the results from the experiment.
+
+**Figure 1: Monthly poverty index**
+
+```{r echo=FALSE}
+ggplot(data = even_data, aes(x = depressed, y = monthly_poverty_index)) +
+  geom_jitter(width = 0.25, alpha = 0.2, color = "blue") +
+  labs(y = "Monthly poverty index", x = "Depressed", caption = 
+         "0 = not at all, 1 = several days, 2 = more than half the days, 3 = nearly every day") +
+  theme_bw()
+```
+
+Because there was an overwhelming amount of people who answer '0' on this question, I filtered out the noise by selecting 400 people randomly from each answer. Looking at the graph, you can tell that the distribution of monthly poverty index varies depending on the answer that people chose. As the rate of depressive episodes over the past two weeks increase, so does the concentration of people who are lower on the monthly poverty index. The distribution also becomes more polarized. As you can see at the distribution of people who answered 'nearly every day,' clusters of people were either high or low on the monthly poverty index, with relatively less people who are in between. It's also interesting to see that there the greatest number of people who are ranked highly on the monthly poverty index answered '0,' or not at all, to this question.
+
+**Figure 2: Hours of sleep**
+
+```{r echo=FALSE}
+ggplot(data = even_data, aes(x = depressed, y = sleep_hours)) +
+  geom_jitter(width = 0.25, alpha = 0.2, color = "blue") +
+  labs(y = "Hours slept", x = "Depressed", caption = 
+         "0 = not at all, 1 = several days, 2 = more than half the days, 3 = nearly every day") +
+  theme_bw()
+```
+
+Here is another graph with an interesting distribution. You can see with the people who answered 'not at all,' the number of hours they slept are very consistent, with a majority of people sleeping between 5-10 hours each night. However, with the people who answered others than 'not at all,' the distribution of the hours they sleep each night becomes more haphazard, and have a larger variation from the normal distribution. This may be the result of a disrupted sleep cycle and irregular sleeping schedules.
+
+```{r, echo=FALSE}
+## Training the bio factors models
+bio_factors <- select(health_overview, high_blood_pressure, gender,
+                      high_cholesterol, depressed, anemia, overweight,
+                      sedentary_minutes, sleep_hours, bmi, depressed)
+
+bio_factors$depressed <- as.factor(bio_factors$depressed)
+
+class_split_bio <- initial_split(bio_factors, prop = 0.75)
+
+## Train and test based on the data set
+class_train_bio <- training(class_split_bio)
+class_test_bio <- testing(class_split_bio)
+
+## training the boosted tree classification model ####
+boost_class_fit_bio <- boost_tree() |>
+  set_engine("xgboost") |>
+  set_mode("classification") |>
+  fit(depressed ~ ., data = class_train_bio)
+
+## training the forested tree classification model ####
+forest_class_fit_bio <- rand_forest() |>
+  set_engine("ranger") |>
+  set_mode("classification") |>
+  fit(depressed ~ ., data = class_train_bio)
+```
+
+```{r, echo=FALSE}
+#### evaluate model performance on test set ####
+class_results_bio <- class_test_bio
+
+class_results_bio$boost_pred <- predict(boost_class_fit_bio, class_test_bio)$.pred_class
+class_results_bio$forest_pred <- predict(forest_class_fit_bio, class_test_bio)$.pred_class
+
+boost_predicted <- class_results_bio$boost_pred
+forest_predicted <- class_results_bio$forest_pred
+actual <- class_results_bio$depressed
+
+boost_matrix_bio <- confusionMatrix(boost_predicted, actual,
+                mode = "everything",
+                positive="1")
+
+forest_matrix_bio <- confusionMatrix(forest_predicted, actual,
+                mode = "everything",
+                positive="1")
+
+## boosted tree model
+boost_data_frame_bio <- data.frame(boost_matrix_bio$table)
+
+## random forest model
+forest_data_frame_bio <- data.frame(forest_matrix_bio$table)
+
+## Training the social factors model
+social_factors <- complete_health_overview |>
+  select(education, income_to_poverty, race, self_image.x, 
+         monthly_poverty_index, type_of_work, self_image.y, depressed) |>
+  filter(education <= 5)
+
+social_factors$depressed <- as.factor(social_factors$depressed)
+
+class_split_social <- initial_split(social_factors, prop = 0.75)
+```
+
+**Figure 3: Gradient Boosting Tree for Biological Factors**
+
+```{r echo=FALSE}
+ggplot(boost_data_frame_bio, aes(fill=Prediction, y=Freq, x=Reference)) + 
+  geom_bar(position="fill", stat="identity") +
+  theme_bw() +
+  labs(y = "Percentage") +
+  scale_fill_manual(values=wes_palette(n=4, name="Moonrise1"))
+```
+
+Overall, the gradient boosting model did not do too well with predicting problems with the people who reported that they had mental health problems. The models trained on biological factors is completely incapable of guessing an answer other than '0,' which results from me not vetting the biological factors enough.
+
+**Figure 4: Random Forest for Biological Factors**
+
+```{r echo=FALSE}
+ggplot(forest_data_frame_bio, aes(fill=Prediction, y=Freq, x=Reference)) + 
+  geom_bar(position="fill", stat="identity") +
+  theme_bw() +
+  labs(y = "Percentage") +
+  scale_fill_manual(values=wes_palette(n=4, name="Moonrise1"))
+```
+
+A very similar thing happened for the random forest model, except the model is even more incapable of guessing. This time, it only guessed '0' and no other answer.
+
+**Figure 5: Most Important Biological Factors**
+
+```{r echo=FALSE}
+vip(boost_class_fit_bio) +
+  theme_bw() +
+  labs(title = "Important factors in the biological model")
+```
+
+For what it's worth, the most important biological factor in the models is a person's body mass index. However, it may not be an accurate depiction because the models mostly guessed '0,' which indicated that the models required no analysis of its factors.
+
+```{r, echo=FALSE}
+## Train and test based on the data set
+class_train_social <- training(class_split_social)
+class_test_social <- testing(class_split_social)
+
+## training the boosted tree classification model ####
+boost_class_fit_social <- boost_tree() |>
+  set_engine("xgboost") |>
+  set_mode("classification") |>
+  fit(depressed ~ ., data = class_train_social)
+
+## training the forested tree classification model ####
+forest_class_fit_social <- rand_forest() |>
+  set_engine("ranger") |>
+  set_mode("classification") |>
+  fit(depressed ~ ., data = class_train_social)
+```
+
+```{r, echo=FALSE}
+#### evaluate model performance on test set ####
+class_results_social <- class_test_social
+
+class_results_social$boost_pred <- predict(boost_class_fit_social, class_test_social)$.pred_class
+class_results_social$forest_pred <- predict(forest_class_fit_social, class_test_social)$.pred_class
+
+## calculating the f1 score
+boost_predicted <- class_results_social$boost_pred
+forest_predicted <- class_results_social$forest_pred
+actual <- class_results_social$depressed
+
+# create confusion matrix
+boost_matrix_social <- confusionMatrix(boost_predicted, actual,
+                mode = "everything",
+                positive="1")
+
+forest_matrix_social <- confusionMatrix(forest_predicted, actual,
+                mode = "everything",
+                positive="1")
+
+## boosted tree model
+boost_data_frame_social <- data.frame(boost_matrix_social$table)
+boost_table_social <- pivot_wider(boost_data_frame_social,
+            names_from = Reference,
+            values_from = Freq)
+
+## random forest model
+forest_data_frame_social <- data.frame(forest_matrix_social$table)
+forest_table_social <- pivot_wider(forest_data_frame_social,
+            names_from = Reference,
+            values_from = Freq)
+```
+
+**Figure 6: Gradient Boosting Tree for Social Factors**
+
+```{r echo=FALSE}
+ggplot(boost_data_frame_social, aes(fill=Prediction, y=Freq, x=Reference)) + 
+  geom_bar(position="fill", stat="identity") +
+  theme_bw() +
+  labs(y = "Percentage") +
+  scale_fill_manual(values=wes_palette(n=4, name="Moonrise1"))
+```
+
+The gradient boosting tree trained on social factors is much more accurate than the gradient boosting tree trained on biological factors. You can see that although the model is still guessing '0' most of the time, it at least is able to detect a level of inconsistency between the answers to determine the presence of a problem in one's mental health, but not be able to exactly pinpoint the severity. A person who answer '2' to the question is the least likely to be guessed correctly by the model, which simply might be because there is a lack of people who answered that way on the survey.
+
+**Figure 7: Random Forest for Social Factors**
+
+```{r echo=FALSE}
+ggplot(forest_data_frame_social, aes(fill=Prediction, y=Freq, x=Reference)) + 
+  geom_bar(position="fill", stat="identity") +
+  theme_bw() +
+  labs(y = "Percentage") +
+  scale_fill_manual(values=wes_palette(n=4, name="Moonrise1"))
+```
+
+The random forest model trained on social factors has roughly the same accuracy as the gradient boosting tree. Only this time, the model predicted even less 2's, and instead compensated by guessing '1' more times.
+
+**Figure 8: Most Important Social Factors**
+
+```{r echo=FALSE}
+vip(boost_class_fit_social) +
+  theme_bw() +
+  labs(title = "Important factors in the social model")
+```
+
+As shown in the chart above, the most significant factor by a large margin used in the models is a person's self image. Trailing behind are the family income to poverty ratio and the monthly poverty index, which factored into the model's decision a little over 10% for each.
 
 ## Discussion
 
@@ -66,4 +553,4 @@ All the data comes from the CDC website:
 
 ## Acknowledgements
 
-I would like to acknowledge Yijia Wang and AJ DiDonato for providing feedback on my project, as well as Sarah Mae Parker for teaching me all I know about R right now.
+I would like to acknowledge Yijia Wang and AJ DiDonato for providing feedback on my project, as well as Sarah Parker for teaching me all I know about R right now and Delaney Rice for being the organizer of this program.
