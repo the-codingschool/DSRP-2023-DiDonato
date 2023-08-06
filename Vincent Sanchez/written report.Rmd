@@ -97,7 +97,7 @@ Next steps could include gathering more data to increase the scale and predictab
 
 The datasets used in this research project can be found [***here***](https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?Cycle=2017-2020).
 
-The GitHub repository with the code from this project can be found [***here***](https://github.com/the-codingschool/DSRP-2023-DiDonato/tree/dev-VS) (under the `Vincent Sanchez` folder).
+The GitHub repository with the code from this project can be found [***here***](https://github.com/the-codingschool/DSRP-2023-DiDonato) (under the `Vincent Sanchez` folder).
 
 ### Acknowledgements
 
