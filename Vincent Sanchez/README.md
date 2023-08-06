@@ -9,18 +9,6 @@ The goal with this data is to answer the question of "What is the correlation be
 ## *The Results*
 
 -   The majority of those with a liver condition also have hypertension.
-
-```{=html}
-<!-- -->
-```
 -   It is most probable to be diagnosed with hypertension before you are diagnosed with a liver condition.
-
-```{=html}
-<!-- -->
-```
 -   Marriage has no effect on whether or not you are diagnosed with hypertension or a liver condition.
-
-```{=html}
-<!-- -->
-```
 -   Hispanic people are more likely to have a liver condition than Black, White, and multi-racial people.
