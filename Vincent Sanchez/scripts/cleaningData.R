@@ -28,7 +28,7 @@ med_conditions <- read.xport("Vincent Sanchez/more-data/P_MCQ.XPT")
 
 # BPQ030: Told had high blood pressure 2+ times
 # BPD035: Age told had hypertension
-# BPQ040A: Taking prescription for hypertension
+# BPQ050A: Taking prescription for hypertension
 
 # MCQ160L: Ever told you had any liver condition
 # MCQ170L: Do you still have a liver condition

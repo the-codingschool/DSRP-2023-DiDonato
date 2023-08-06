@@ -29,7 +29,7 @@ test3 <- filter(test2, agetold_liver > 21, agetold_hbp > 21)
 
 cor_told3 <- cor(test3)
 corrplot(cor_told3, tl.srt = 30,
-         type = "full") # correlation between agetold_liver and agetold_hbp ?
+         type = "full")
 
 # scatterplot (agetold_liver vs. agetold_hbp)
 
