@@ -1,3 +1,7 @@
+---
+---
+---
+
 # The Relationship Between Alcohol Consumption and Additional Factors with Physical Health
 
 ## Abstract
@@ -16,14 +20,74 @@ The data sets used come from the Centers for Disease Control and Prevention (CDC
 
 ## Results
 
-### Figure 1
+### Figure 1 
 
-![](images/Untitled presentation-01.png)
+**Average Alcohol Consumption Based on Gender**
+
+![](images/Untitled presentation-01.png){style="display: block; margin: 1em auto;"}
+
+Figure 1 shows the relationship between a person's gender and the amount of alcohol consumed. Males consume more alcohol on average (taken from the past 12 months of taking the survey)/
+
+### Figure 2
+
+![Figure 2 displays a correlation plot with all the variables in the dataset. It is not too clear on what factors are really correlated. So I decided to compare certain factors using bar graphs to find more specific correlations closer to what my research question sought to understand. This is shown in Figures 3 and 4.](images/REPORTplot2.png){style="display: block; margin: 1em auto;" width="534"}
+
+### Figure 3
+
+![Figure 3 shows the relationship between High Blood Pressure and Average Drinks Consumed in one day. As shown above, at around four or five drinks, people most commonly have high blood pressure.](images/REPORTPLOT3.png){style="display: block; margin: 1em auto;" width="534"}
+
+### Figure 4
+
+![This graph is similar to Figure 2. Around 4 or 5 drinks seems to be the most concentrated. However, it spikes a little more around 6-7 drinks.](images/REPORTPLOT4.png){style="display: block; margin: 1em auto;" width="528"}
+
+After finding that the answer "Yes" to either having high cholesterol or high blood pressure seemed to have been most concentrated around 4 or 5 drinks of alcohol, this is what I had sought to use hypothesis testing on. As well as gender for a separate. The variables used were `gender` , `4orMoreDrinksDaily` , `HighBloodPressure` , and `HighCholesterol` in order to achieve this.
+
+A null hypothesis and alternate hypothesis was created for the two different models.
+
+In Figure 5, the **null hypothesis** was *Gender does not affect blood pressure or cholesterol level* and the **alternate hypothesis** was *Gender does affect blood pressure or cholesterol level*
+
+In Figure 6, the **null hypothesis** was *Having 4 or more drinks does not affect blood pressure or cholesterol level* and the **alternate hypothesis** was *Having 4 or more drinks does affect blood pressure or cholesterol level .*
+
+### Figure 5
+
+![Figure 5 shows the Chi-Square results for the first variable tested. As shown above, both models fell beneath the 0.05, meaning that they reject the null hypothesis. The chi-square model for HighBloodPressure had a p-value of 0.03167844 and the chi-square model for HighCholesterol had a p-value of 0.04909763 .](images/REPORTPLOT5.png){style="display: block; margin: 1em auto;" width="528"}
+
+### Figure 6
+
+![Figure 6 however, shows something different. This chi-square model sought to compare the results of High Blood Pressure/Cholesterol and 4 or More Drinks Daily. However, only High Blood Pressure falls below the 0.05 line and rejects the null hypothesis. The p-value for High Cholesterol is way above it. The chi-square model for HighBloodPressure had a p-value of 0.0006144196 and the chi-square model for HighCholesterol had a p-value of 0.1470252.](images/REPORTPLOT6.png){style="display: block; margin: 1em auto;" width="525"}
+
+## Discussion 
+
+Although my initial hypothesis includes the intake of alcohol and its comparison to physical health, and that the second chi-square test did not reject the null hypothesis when testing for high cholesterol, this doesn't necessarily mean that it is wrong. There could be other factors that affect this.
+
+Due to the use of multiple surveys, this had led to a lot of NA values being produced in the data set upon merging the three data sets together. This is due to some who had taken the high blood pressure/high cholesterol survey and not the alcohol survey or vice verse, meaning the data set had to be cut down a lot. Additionally, I had wished to use more variables and data sets such as weight, kidney health, heart disease, diet and more, as these are also other factors that can contribute to an affect of alcohol or be affected by alcoholic intake. Due to how complex this would be however, I unfortunately did not have enough time within the scope of this project to clean and test all these variables.
+
+In order to better understand the topic at hand, I believe a new survey should be conducted that takes all these variables into account, in addition to more specific questions about alcoholic intake such as differentiating between shots, glasses or bottles, and the type of alcoholic beverage consumed, as all of these may change and affect how results are perceived. All these variables being contained in the same survey also allows for minimal NA values to be present as everyone would have taken the same survey.
+
+Although this may have not been the most concise research into the topic of alcoholic intake and affect on health, it is still important to move forward with research and continue to figure out specifics of the harm of alcohol. Many develop alcohol addictions and end up harming themselves and the people around them, it is important to make people more aware of the dangers of alcohol.
+
+## Acknowledgements 
+
+Special thanks to Sarah Mae Parker for teaching me the basic of R, R Studio, and Machine Learning, Tejas Kamtam and Yijia Wang who were my TAs throughout the program that helped out, Delaney Rice for coordinating, and the rest of The Coding School for hosting the Data Science Research Program. I would also like to thank TCS for providing the scholarship that had made it possible for me to learn and participate in this program.
+
+## Extra Links
+
+Listed here are links to the data sets used along with my GitHub. My code is listed under the branch labeled `devJQ` .
+
+[GitHub DSRP 2023 DiDonato](https://github.com/the-codingschool/DSRP-2023-DiDonato)
+
+[CDC Questionnaire Data Sets](https://wwwn.cdc.gov/nchs/nhanes/search/datapage.aspx?Component=Questionnaire&Cycle=2017-2020)
+
+[Demographics Codebook](https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/P_DEMO.htm)
+
+[Blood Pressure/Cholesterol Codebook](https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/P_BPQ.htm)
+
+[Alcohol Use Codebook](https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/P_ALQ.htm)
 
 ## Bibliography
 
-<https://www.cdc.gov/alcohol/fact-sheets/alcohol-use.htm>
+*Drinking too much alcohol can harm your health. Learn the facts \| CDC*. (2022, April 14). Drinking Too Much Alcohol Can Harm Your Health. Learn the Facts \| CDC. <https://www.cdc.gov/alcohol/fact-sheets/alcohol-use.htm>
 
-<https://www.niaaa.nih.gov/alcohols-effects-health/alcohol-topics/alcohol-facts-and-statistics/alcohol-related-emergencies-and-deaths-united-states#:~:text=It%20is%20estimated%20that%20more,physical%20inactivity%2C%20and%20illegal%20drugs.>
+*Alcohol-Related Emergencies and Deaths in the United States \| National Institute on Alcohol Abuse and Alcoholism (NIAAA)*. (2023, January 1). Alcohol-Related Emergencies and Deaths in the United States \| National Institute on Alcohol Abuse and Alcoholism (NIAAA). <https://www.niaaa.nih.gov/alcohols-effects-health/alcohol-topics/alcohol-facts-and-statistics/alcohol-related-emergencies-and-deaths-united-states#:~:text=It%20is%20estimated%20that%20more,physical%20inactivity%2C%20and%20illegal%20drugs.>
 
-<https://www.caron.org/blog/the-american-alcohol-problem>
+*The American Alcohol Problem: An Overlooked and Deadly Epidemic*. (n.d.). Caron Treatment Centers. <https://www.caron.org/blog/the-american-alcohol-problem>
