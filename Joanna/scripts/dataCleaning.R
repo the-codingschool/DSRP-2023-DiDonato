@@ -39,10 +39,11 @@ demoCLEAN <- select(demoP, c(SEQN,SDDSRVYR,RIDSTATR,RIAGENDR, RIDAGEYR,DMDBORN4,
          age = RIDAGEYR,
          birthCountry = DMDBORN4,
          education = DMDEDUC2,
-         race = RIDRETH3)
-# demoCLEAN["gender"][demoCLEAN["gender"] == "1"] <- "Male"
-# demoCLEAN["gender"][demoCLEAN["gender"] == "2"] <- "Female"
-View(demoCLEAN)
+         race = RIDRETH3
+         )
+
+#View(demoCLEAN)
+
 
 
 # Cleaned Alcohol Use Data
@@ -55,8 +56,14 @@ alcCLEAN <- select(alcoholUse, c(SEQN:ALQ151)) |>
          TimesDrink4or5in2hrs = ALQ270,
          `8orMoreDrinksOneDay`= ALQ280,
          `12orMoreDrinksOneDay` = ALQ290,
-         `4orMoreDrinksDaily` = ALQ151)
-View(alcCLEAN)
+         `4orMoreDrinksDaily` = ALQ151) |>
+  filter(HowOftenDrankAlcohol != 77,
+         AvgDrinksDaily != 999,
+         )
+
+
+
+#View(alcCLEAN)
 
 # Cleaned Blood Pressure Data
 bpCLEAN <- select(bloodPressure, c(SEQN, BPQ020, BPQ080))|>
@@ -66,39 +73,35 @@ bpCLEAN <- select(bloodPressure, c(SEQN, BPQ020, BPQ080))|>
          HighCholesterol !=7,
          HighCholesterol !=9)
 
-# bpCLEAN$BPQ020 <- as.character(bpCLEAN$BPQ020)
-# bpCLEAN[bpCLEAN == "1"] <- "Yes"
-# bpCLEAN[bpCLEAN == "2"] <- "No"
+#View(bpCLEAN)
 
-View(bpCLEAN)
 
 
 # Cleaned Kidney Health Data
 khCLEAN <- select(kidneyHealth, c(SEQN, KIQ022)) |>
   rename(FailingKidneys = KIQ022)|>
-  filter(FailingKidneys != 9)
-View(khCLEAN)
+  filter(
+         FailingKidneys != 9)
+
+#View(khCLEAN)
 
 #### Join files ####
 
 allData <- left_join(demoCLEAN, alcCLEAN, by = "SEQN") %>%
   left_join(., bpCLEAN, by = "SEQN") %>%
   left_join(., khCLEAN, by = "SEQN")
-View(allData)
+#View(allData)
 
 
 #### Remove NA values ####
 # Any NA values found in alcohol data set results in the rows being dropped. This is due to those participants in the demographic data did not take the alcohol use survey.
 # Removing NA values for BP/CHL shortens the data set drastically. There are still ans for BP/CHL and alcUse data
 
-cleanData <- allData %>% drop_na(HaveDrankAlcohol:`4orMoreDrinksDaily`) 
+cleanData <- allData %>% drop_na(HaveDrankAlcohol:FailingKidneys) 
+
 View(cleanData)
 
 
-
-
-
-  
 
 
 
